@@ -1,0 +1,502 @@
+<div class="calendar-container">
+    <div class="app-container">
+      <header>
+        <div class="header-left">
+          <h1>Nova Calendar</h1>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-outline" id="addEventBtn">
+            <i class="fas fa-plus"></i> Add Event
+          </button>
+          <button class="btn btn-icon" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button class="btn btn-icon">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </header>
+  
+      <div class="calendar-controls">
+        <div class="month-navigation">
+          <button class="btn btn-icon" id="prevMonth">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="current-month" id="currentMonth">June 2023</div>
+          <button class="btn btn-icon" id="nextMonth">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <button class="btn btn-primary" id="todayBtn">
+          Today
+        </button>
+      </div>
+  
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Day headers -->
+        <div class="day-header">Sun</div>
+        <div class="day-header">Mon</div>
+        <div class="day-header">Tue</div>
+        <div class="day-header">Wed</div>
+        <div class="day-header">Thu</div>
+        <div class="day-header">Fri</div>
+        <div class="day-header">Sat</div>
+  
+        <!-- Calendar days will be inserted here by JavaScript -->
+      </div>
+  
+      <!-- Event Form -->
+      <div class="event-form" id="eventForm">
+        <div class="form-header">
+          <h3>Add New Event</h3>
+          <button class="close-btn" id="closeFormBtn">&times;</button>
+        </div>
+        <form id="eventFormData">
+          <div class="form-group">
+            <label for="eventTitle">Event Title</label>
+            <input type="text" id="eventTitle" class="form-control" placeholder="Enter event title" required>
+          </div>
+          <div class="form-group">
+            <label for="eventDate">Date</label>
+            <input type="date" id="eventDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="eventTime">Time</label>
+            <input type="time" id="eventTime" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Event Type</label>
+            <div class="color-options">
+              <div class="color-option selected" data-type="work" style="background-color: var(--primary);">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="color-option" data-type="personal" style="background-color: var(--accent);">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="color-option" data-type="social" style="background-color: var(--success);">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="color-option" data-type="other" style="background-color: var(--warning); color: var(--text);">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="eventDescription">Description (Optional)</label>
+            <textarea id="eventDescription" class="form-control" rows="3" placeholder="Enter event description"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" id="cancelEventBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Event</button>
+          </div>
+        </form>
+      </div>
+  
+      <div class="overlay" id="overlay"></div>
+    </div>
+  </div>
+  
+  <script>
+    // Calendar JavaScript from the second code
+    document.addEventListener('DOMContentLoaded', function() {
+        // Current date
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+       
+        // DOM Elements
+        const calendarGrid = document.getElementById('calendarGrid');
+        const currentMonthElement = document.getElementById('currentMonth');
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+        const todayBtn = document.getElementById('todayBtn');
+        const addEventBtn = document.getElementById('addEventBtn');
+        const eventForm = document.getElementById('eventForm');
+        const closeFormBtn = document.getElementById('closeFormBtn');
+        const cancelEventBtn = document.getElementById('cancelEventBtn');
+        const overlay = document.getElementById('overlay');
+        const eventFormData = document.getElementById('eventFormData');
+        const themeToggle = document.getElementById('themeToggle');
+       
+        // Event data - will be loaded from server
+        let events = [];
+        let selectedEventType = 'work';
+        let selectedDateElement = null;
+       
+        // Initialize calendar
+        fetchEventsAndRender();
+       
+        // Event listeners
+        prevMonthBtn.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+       
+        nextMonthBtn.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar(currentMonth, currentYear);
+        });
+       
+        todayBtn.addEventListener('click', () => {
+            currentDate = new Date();
+            currentMonth = currentDate.getMonth();
+            currentYear = currentDate.getFullYear();
+            renderCalendar(currentMonth, currentYear);
+        });
+       
+        addEventBtn.addEventListener('click', openEventForm);
+        closeFormBtn.addEventListener('click', closeEventForm);
+        cancelEventBtn.addEventListener('click', closeEventForm);
+        overlay.addEventListener('click', closeEventForm);
+       
+        // Color option selection
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                selectedEventType = this.dataset.type;
+            });
+        });
+       
+        // Form submission
+        eventFormData.addEventListener('submit', async function(e) {
+            e.preventDefault();
+           
+            const title = document.getElementById('eventTitle').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const description = document.getElementById('eventDescription').value;
+           
+            try {
+                const response = await fetch('/api/events', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title,
+                        date,
+                        time,
+                        type: selectedEventType,
+                        description,
+                        userId: '<%= user.id %>'
+                    })
+                });
+               
+                if (!response.ok) throw new Error('Failed to save event');
+               
+                const event = await response.json();
+               
+                // Add to events array
+                events.push(event);
+               
+                // Add to calendar display
+                addEventToCalendar(event);
+               
+                closeEventForm();
+                this.reset();
+            } catch (error) {
+                console.error('Error saving event:', error);
+                alert('Failed to save event');
+            }
+        });
+       
+        // Theme toggle
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+       
+        // Functions
+        async function fetchEventsAndRender() {
+            try {
+                const response = await fetch(`/api/events?userId=<%= user.id %>`);
+                if (!response.ok) throw new Error('Failed to fetch events');
+               
+                events = await response.json();
+                renderCalendar(currentMonth, currentYear);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                renderCalendar(currentMonth, currentYear);
+            }
+        }
+       
+        function renderCalendar(month, year) {
+            // Update month/year display
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July",
+                              "August", "September", "October", "November", "December"];
+            currentMonthElement.textContent = `${monthNames[month]} ${year}`;
+           
+            // Clear previous calendar days (keep headers)
+            while (calendarGrid.children.length > 7) {
+                calendarGrid.removeChild(calendarGrid.lastChild);
+            }
+           
+            // Get first day of month and total days in month
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+           
+            // Get days from previous month
+            const prevMonthDays = new Date(year, month, 0).getDate();
+           
+            // Create empty slots for days before first day of month
+            for (let i = 0; i < firstDay; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('calendar-day', 'empty');
+                const prevDay = prevMonthDays - firstDay + i + 1;
+                dayElement.innerHTML = `
+                    <div class="day-number">${prevDay}</div>
+                `;
+                calendarGrid.appendChild(dayElement);
+            }
+           
+            // Create days for current month
+            const today = new Date();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('calendar-day');
+               
+                // Check if this is today
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+               
+                // Add weather icon randomly (demo only)
+                const hasWeather = Math.random() > 0.7;
+                const weatherIcons = ['☀️', '🌧️', '⛅', '❄️'];
+                const randomWeather = weatherIcons[Math.floor(Math.random() * weatherIcons.length)];
+               
+                // Format date for data attribute
+                const formattedDate = `${year}-${month + 1 < 10 ? '0' + (month + 1) : month + 1}-${i < 10 ? '0' + i : i}`;
+               
+                dayElement.innerHTML = `
+                    <div class="day-number">${i}</div>
+                    ${hasWeather ? `<div class="weather-icon">${randomWeather}</div>` : ''}
+                    <div class="events-container" data-date="${formattedDate}"></div>
+                    <button class="btn-float" data-date="${formattedDate}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                `;
+               
+                // Add click event to create new event
+                dayElement.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on an event or the add button
+                    if (!e.target.closest('.event') && !e.target.closest('.btn-float')) {
+                        const dateInput = document.getElementById('eventDate');
+                        dateInput.value = this.querySelector('.events-container').dataset.date;
+                        selectedDateElement = this.querySelector('.events-container');
+                        openEventForm();
+                    }
+                });
+               
+                calendarGrid.appendChild(dayElement);
+            }
+           
+            // Add events to calendar
+            renderEvents();
+           
+            // Add event listeners to float buttons
+            document.querySelectorAll('.btn-float').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const dateInput = document.getElementById('eventDate');
+                    dateInput.value = this.dataset.date;
+                    selectedDateElement = this.parentElement.querySelector('.events-container');
+                    openEventForm();
+                });
+            });
+        }
+       
+        function renderEvents() {
+            // Clear all events first
+            document.querySelectorAll('.events-container').forEach(container => {
+                container.innerHTML = '';
+            });
+           
+            // Filter events for current month/year
+            const currentEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+            });
+           
+            // Add events to their respective days
+            currentEvents.forEach(event => {
+                addEventToCalendar(event);
+            });
+        }
+       
+        function addEventToCalendar(event) {
+            // Find the events container for this date
+            const dateElements = document.querySelectorAll(`.events-container[data-date="${event.date}"]`);
+           
+            if (dateElements.length > 0) {
+                const eventElement = document.createElement('div');
+                eventElement.classList.add('event', event.type);
+                eventElement.dataset.id = event.id;
+               
+                eventElement.innerHTML = `
+                    <span>${event.time ? `${event.time} ` : ''}${event.title}</span>
+                    <div class="event-actions">
+                        <button class="event-action-btn edit-btn" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="event-action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+               
+                // Add edit and delete functionality
+                const editBtn = eventElement.querySelector('.edit-btn');
+                const deleteBtn = eventElement.querySelector('.delete-btn');
+               
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    editEvent(event.id);
+                });
+               
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteEvent(event.id);
+                });
+               
+                dateElements[0].appendChild(eventElement);
+               
+                // Update event count badge
+                updateEventCountBadge(dateElements[0]);
+            }
+        }
+       
+        function updateEventCountBadge(container) {
+            // Remove existing badge if any
+            const existingBadge = container.parentElement.querySelector('.event-count');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+           
+            // Add new badge if there are events
+            const eventCount = container.children.length;
+            if (eventCount > 0) {
+                const badge = document.createElement('div');
+                badge.classList.add('event-count');
+                badge.textContent = eventCount;
+                container.parentElement.appendChild(badge);
+            }
+        }
+       
+        async function editEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (!event) return;
+           
+            // Fill form with event data
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventDate').value = event.date;
+            document.getElementById('eventTime').value = event.time;
+            document.getElementById('eventDescription').value = event.description || '';
+           
+            // Set event type
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.dataset.type === event.type) {
+                    opt.classList.add('selected');
+                    selectedEventType = event.type;
+                }
+            });
+           
+            // Open form
+            openEventForm();
+           
+            // Modify form submit to handle edit
+            const form = document.getElementById('eventFormData');
+            const originalSubmit = form.onsubmit;
+           
+            form.onsubmit = async function(e) {
+                e.preventDefault();
+               
+                try {
+                    const response = await fetch(`/api/events/${event.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            title: document.getElementById('eventTitle').value,
+                            date: document.getElementById('eventDate').value,
+                            time: document.getElementById('eventTime').value,
+                            type: selectedEventType,
+                            description: document.getElementById('eventDescription').value
+                        })
+                    });
+                   
+                    if (!response.ok) throw new Error('Failed to update event');
+                   
+                    const updatedEvent = await response.json();
+                   
+                    // Update event in local array
+                    const index = events.findIndex(e => e.id === event.id);
+                    if (index !== -1) {
+                        events[index] = updatedEvent;
+                    }
+                   
+                    // Re-render events
+                    renderEvents();
+                   
+                    // Close form and reset
+                    closeEventForm();
+                    form.reset();
+                    form.onsubmit = originalSubmit;
+                } catch (error) {
+                    console.error('Error updating event:', error);
+                    alert('Failed to update event');
+                }
+            };
+        }
+       
+        async function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                try {
+                    const response = await fetch(`/api/events/${eventId}`, {
+                        method: 'DELETE'
+                    });
+                   
+                    if (!response.ok) throw new Error('Failed to delete event');
+                   
+                    // Remove from local array
+                    events = events.filter(e => e.id !== eventId);
+                   
+                    // Re-render events
+                    renderEvents();
+                } catch (error) {
+                    console.error('Error deleting event:', error);
+                    alert('Failed to delete event');
+                }
+            }
+        }
+       
+        function openEventForm() {
+            eventForm.classList.add('active');
+            overlay.classList.add('active');
+           
+            // Focus the title field
+            document.getElementById('eventTitle').focus();
+        }
+       
+        function closeEventForm() {
+            eventForm.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+    });
+  </script>

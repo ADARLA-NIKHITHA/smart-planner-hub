@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      height: 100vh;
+      color: #495057;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #ffffff;
+      color: #495057;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: fixed;
+      box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 0 12px 12px 0;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      transform: translateX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+    }
+
+    .sidebar h2 {
+      font-size: 1.8rem;
+      text-align: center;
+      color: #5d78ff;
+      margin-bottom: 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar a {
+      color: #495057;
+      text-decoration: none;
+      padding: 12px 20px;
+      margin: 8px 0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: left center;
+    }
+
+    .sidebar a:hover {
+      background-color: #f0f4ff;
+      color: #5d78ff;
+      transform: translateX(8px) scale(1.02);
+    }
+
+    .sidebar a.active {
+      background-color: #f0f4ff;
+      color: #5d78ff;
+      font-weight: 600;
+    }
+
+    .sidebar i {
+      margin-right: 15px;
+      font-size: 1.2rem;
+      color: #5d78ff;
+      transition: all 0.3s ease;
+    }
+
+    /* Content Area */
+    .content {
+      margin-left: 270px;
+      padding: 30px;
+      flex-grow: 1;
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      border-radius: 12px;
+      margin-top: 20px;
+      margin-right: 20px;
+      overflow-y: auto;
+      min-height: calc(100vh - 40px);
+      transition: margin 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      border-radius: 10px;
+      margin-bottom: 25px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .header:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .header .logo {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #5d78ff;
+      display: flex;
+      align-items: center;
+    }
+
+    .header .logo i {
+      margin-right: 10px;
+      color: #5d78ff;
+      transition: transform 0.3s ease;
+    }
+
+    .header:hover .logo i {
+      transform: rotate(-10deg);
+    }
+
+    .header .profile {
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .header .profile:hover {
+      transform: translateY(-2px);
+    }
+
+    .header .profile img {
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      margin-right: 10px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .header .profile:hover img {
+      border-color: #5d78ff;
+    }
+
+    .header .profile span {
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .header .actions i {
+      margin-left: 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #6c757d;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .header .actions i:hover {
+      color: #5d78ff;
+      transform: translateY(-2px) scale(1.15);
+    }
+
+    /* Notifications */
+    .notifications {
+      position: absolute;
+      right: 15px;
+      top: 60px;
+      background: #ffffff;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      display: none;
+      z-index: 1000;
+      width: 300px;
+      border: 1px solid #e9ecef;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .notifications.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .notifications h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #495057;
+    }
+
+    .notifications ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .notifications ul li {
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .notifications ul li:hover {
+      background-color: #f8f9fa;
+      transform: translateX(3px);
+    }
+
+    .notifications ul li:last-child {
+      border-bottom: none;
+    }
+
+    .notifications ul li a {
+      color: #495057;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .notifications ul li a:hover {
+      color: #5d78ff;
+    }
+
+    .notifications .notification-icon {
+      width: 28px;
+      height: 28px;
+      background-color: #f0f4ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5d78ff;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .notifications ul li:hover .notification-icon {
+      transform: scale(1.1);
+      background-color: #5d78ff;
+      color: white;
+    }
+
+    .notifications .clear-all {
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: color 0.3s ease;
+    }
+
+    .notifications .clear-all:hover {
+      color: #5d78ff;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    /* Weather Widget */
+    .weather-widget {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(0);
+    }
+
+    .weather-widget:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .weather-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .weather-icon {
+      font-size: 2.8rem;
+      margin-right: 20px;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease;
+    }
+
+    .weather-widget:hover .weather-icon {
+      transform: rotate(15deg);
+    }
+
+    .weather-details h3 {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .weather-details p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .weather-location {
+      text-align: right;
+    }
+
+    .weather-location h4 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .weather-location p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Clock Widget */
+    .clock-widget {
+      background: linear-gradient(135deg, #c4b5fd, #a5b4fc);
+      color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(0);
+    }
+
+    .clock-widget:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .clock-time {
+      font-size: 2.8rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .clock-widget:hover .clock-time {
+      letter-spacing: 1px;
+    }
+
+    .clock-date {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      transition: all 0.3s ease;
+    }
+
+    .clock-widget:hover .clock-date {
+      letter-spacing: 0.5px;
+    }
+
+    /* Stats Cards */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stats .card {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid #e9ecef;
+      transform: translateY(0);
+    }
+
+    .stats .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .stats .card h3 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: #5d78ff;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .stats .card:hover h3 {
+      transform: scale(1.05);
+    }
+
+    .stats .card p {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+
+    .stats .card .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .stats .card:hover .progress-bar {
+      height: 10px;
+    }
+
+    .stats .card .progress-bar .progress {
+      height: 100%;
+      width: 80%;
+      background: linear-gradient(90deg, #a1c4fd, #5d78ff);
+      border-radius: 4px;
+      transition: width 1s ease, background 0.3s ease;
+    }
+
+    /* Recent Activity */
+    .recent-activity {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      margin-bottom: 20px;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .recent-activity:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .recent-activity h2 {
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      color: #5d78ff;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .recent-activity h2 i {
+      margin-right: 10px;
+      color: #5d78ff;
+      transition: all 0.3s ease;
+    }
+
+    .recent-activity:hover h2 i {
+      transform: rotate(-15deg);
+    }
+
+    .recent-activity ul {
+      list-style-type: none;
+    }
+
+    .recent-activity ul li {
+      padding: 10px 0;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .recent-activity ul li:hover {
+      background-color: #f8f9fa;
+      padding-left: 8px;
+    }
+
+    .recent-activity ul li:last-child {
+      border-bottom: none;
+    }
+
+    .recent-activity ul li i {
+      margin-right: 10px;
+      color: #5d78ff;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .recent-activity ul li:hover i {
+      transform: scale(1.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 250px;
+      }
+     
+      .sidebar.show {
+        transform: translateX(0);
+      }
+     
+      .content {
+        margin-left: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+     
+      .weather-widget {
+        flex-direction: column;
+        text-align: center;
+      }
+     
+      .weather-info {
+        margin-bottom: 15px;
+        justify-content: center;
+      }
+     
+      .weather-location {
+        text-align: center;
+      }
+     
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+     
+      .header .profile {
+        margin-top: 10px;
+      }
+     
+      .header .actions {
+        margin-top: 10px;
+      }
+     
+      .notifications {
+        right: 10px;
+        width: 280px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+     
+      .content {
+        padding: 20px;
+        margin-right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar" id="sidebar">
+    <h2>Dashboard</h2>
+    <a href="#" class="active" onclick="changeContent('task-manager')"><i class="fas fa-tasks"></i> <span>Task Manager</span></a>
+    <a href="#" onclick="changeContent('notes')"><i class="fas fa-sticky-note"></i> <span>Notes</span></a>
+    <a href="#" onclick="changeContent('calendar')"><i class="fas fa-calendar-alt"></i> <span>Calendar</span></a>
+    <a href="#" onclick="changeContent('flashcards')"><i class="fas fa-book-open"></i> <span>Flashcards</span></a>
+    <a href="#" onclick="changeContent('calculator')"><i class="fas fa-calculator"></i> <span>Calculator</span></a>
+    <a href="#" onclick="changeContent('study-timer')"><i class="fas fa-clock"></i> <span>Study Timer</span></a>
+    <a href="#" onclick="changeContent('settings')"><i class="fas fa-cogs"></i> <span>Settings</span></a>
+    <a href="#" onclick="changeContent('logout')"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-tachometer-alt"></i> My Dashboard
+      </div>
+      <div class="profile">
+        <img src="https://www.w3schools.com/w3images/avatar2.png" alt="User Avatar">
+        <span><%= username %></span>
+      </div>
+      <div class="actions">
+        <i class="fas fa-bell" onclick="toggleNotifications()"></i>
+        <i class="fas fa-envelope"></i>
+        <i class="fas fa-cog"></i>
+      </div>
+    </div>
+
+    <div class="notifications" id="notifications">
+      <h3>Recent Notifications <span class="clear-all" onclick="clearNotifications()">Clear All</span></h3>
+      <ul>
+        <li>
+          <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+          </div>
+          <a href="#">New task assigned</a>
+        </li>
+        <li>
+          <div class="notification-icon">
+            <i class="fas fa-calendar"></i>
+          </div>
+          <a href="#">Reminder: Meeting in 10 minutes</a>
+        </li>
+        <li>
+          <div class="notification-icon">
+            <i class="fas fa-check"></i>
+          </div>
+          <a href="#">Note saved successfully</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Weather Widget -->
+      <div class="weather-widget" id="weather-widget">
+        <div class="weather-info">
+          <div class="weather-icon">
+            <i class="fas fa-sun"></i>
+          </div>
+          <div class="weather-details">
+            <h3 id="weather-temp">32°C</h3>
+            <p id="weather-desc">Sunny</p>
+          </div>
+        </div>
+        <div class="weather-location">
+          <h4 id="weather-city">New Delhi</h4>
+          <p id="weather-date">Monday, June 5</p>
+        </div>
+      </div>
+
+      <!-- Clock Widget -->
+      <div class="clock-widget" id="clock-widget">
+        <div class="clock-time" id="clock-time">12:34:56</div>
+        <div class="clock-date" id="clock-date">Monday, June 5, 2023</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="card">
+        <h3>23</h3>
+        <p>Tasks Pending</p>
+        <div class="progress-bar">
+          <div class="progress"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>5</h3>
+        <p>Upcoming Events</p>
+        <div class="progress-bar">
+          <div class="progress" style="width: 50%"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>10</h3>
+        <p>Notes Saved</p>
+        <div class="progress-bar">
+          <div class="progress" style="width: 80%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="recent-activity">
+      <h2><i class="fas fa-history"></i> Recent Activity</h2>
+      <ul>
+        <li><i class="fas fa-tasks"></i> Created a new task: Study for 2 hours</li>
+        <li><i class="fas fa-sticky-note"></i> Added a new note: Meeting notes with team</li>
+        <li><i class="fas fa-check-circle"></i> Completed task: Finish coding project</li>
+        <li><i class="fas fa-calendar"></i> Created a new event: Team Meeting at 2 PM</li>
+        <li><i class="fas fa-book"></i> Updated flashcards for Biology Exam</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function changeContent(page) {
+      // Remove active class from all links
+      document.querySelectorAll('.sidebar a').forEach(link => {
+        link.classList.remove('active');
+      });
+     
+      // Add active class to clicked link with animation
+      const activeLink = event.currentTarget;
+      activeLink.classList.add('active');
+     
+      // Pulse animation
+      activeLink.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        activeLink.style.transform = '';
+      }, 300);
+     
+      const contentText = {
+        "task-manager": "Here you can manage your tasks.",
+        "notes": "Take and organize your notes here.",
+        "calendar": "View your calendar and events.",
+        "flashcards": "Create and study flashcards.",
+        "calculator": "Use the calculator for quick calculations.",
+        "study-timer": "Use the study timer to focus on tasks.",
+        "settings": "Adjust your settings here.",
+        "logout": "You have logged out."
+      };
+      // In a real app, you would load the actual content here
+      console.log(`Loading ${page} content`);
+    }
+
+    // Notifications Toggle with animation
+    function toggleNotifications() {
+      const notifications = document.getElementById('notifications');
+      if (notifications.classList.contains('show')) {
+        notifications.classList.remove('show');
+        setTimeout(() => {
+          notifications.style.display = 'none';
+        }, 300);
+      } else {
+        notifications.style.display = 'block';
+        setTimeout(() => {
+          notifications.classList.add('show');
+        }, 10);
+      }
+    }
+
+    function clearNotifications() {
+      const notificationsList = document.querySelector('.notifications ul');
+      notificationsList.style.transform = 'translateX(10px)';
+      notificationsList.style.opacity = '0.5';
+     
+      setTimeout(() => {
+        notificationsList.innerHTML = '<li style="justify-content: center;">No notifications</li>';
+        notificationsList.style.transform = 'translateX(0)';
+        notificationsList.style.opacity = '1';
+       
+        setTimeout(() => {
+          toggleNotifications();
+        }, 1000);
+      }, 200);
+    }
+
+    // Clock Function with smooth transitions
+    function updateClock() {
+      const now = new Date();
+     
+      // Time with smooth transition
+      const clockTime = document.getElementById('clock-time');
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+     
+      if (clockTime.textContent !== `${hours}:${minutes}:${seconds}`) {
+        clockTime.style.opacity = '0';
+        setTimeout(() => {
+          clockTime.textContent = `${hours}:${minutes}:${seconds}`;
+          clockTime.style.opacity = '1';
+        }, 200);
+      }
+     
+      // Date
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateString = now.toLocaleDateString('en-US', options);
+      document.getElementById('clock-date').textContent = dateString;
+     
+      // Update weather date
+      document.getElementById('weather-date').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Update clock every second with smooth transition
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+
+    // Indian weather data
+    const indianCities = [
+      { name: "New Delhi", temp: 32, condition: "Sunny", icon: "fa-sun" },
+      { name: "Mumbai", temp: 28, condition: "Partly Cloudy", icon: "fa-cloud-sun" },
+      { name: "Bangalore", temp: 26, condition: "Cloudy", icon: "fa-cloud" },
+      { name: "Chennai", temp: 34, condition: "Hot", icon: "fa-temperature-high" },
+      { name: "Kolkata", temp: 30, condition: "Humid", icon: "fa-water" }
+    ];
+
+    function updateWeather() {
+      const randomCity = indianCities[Math.floor(Math.random() * indianCities.length)];
+     
+      // Animate temperature change
+      const tempElement = document.getElementById('weather-temp');
+      tempElement.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        tempElement.textContent = `${randomCity.temp}°C`;
+        tempElement.style.transform = 'scale(1)';
+      }, 200);
+     
+      // Animate description change
+      const descElement = document.getElementById('weather-desc');
+      descElement.style.opacity = '0';
+      setTimeout(() => {
+        descElement.textContent = randomCity.condition;
+        descElement.style.opacity = '1';
+      }, 200);
+     
+      // Animate icon change
+      const weatherIcon = document.querySelector('.weather-icon i');
+      weatherIcon.style.transform = 'scale(0)';
+      setTimeout(() => {
+        weatherIcon.className = `fas ${randomCity.icon}`;
+        weatherIcon.style.transform = 'scale(1)';
+      }, 200);
+     
+      // Update city
+      document.getElementById('weather-city').textContent = randomCity.name;
+     
+      // Change weather widget color based on condition
+      const weatherWidget = document.getElementById('weather-widget');
+      let gradient;
+      if (randomCity.condition.includes('Sunny') || randomCity.condition.includes('Hot')) {
+        gradient = 'linear-gradient(135deg, #ff9966, #ff5e62)'; // Warm colors
+      } else if (randomCity.condition.includes('Rain') || randomCity.condition.includes('Humid')) {
+        gradient = 'linear-gradient(135deg, #4b6cb7, #182848)'; // Cool colors
+      } else if (randomCity.condition.includes('Cloud')) {
+        gradient = 'linear-gradient(135deg, #a1c4fd, #c2e9fb)'; // Light blue
+      } else {
+        gradient = 'linear-gradient(135deg, #5f72bd, #9b59b6)'; // Default
+      }
+     
+      weatherWidget.style.background = gradient;
+    }
+
+    // Update weather every 30 minutes (simulated)
+    updateWeather();
+    setInterval(updateWeather, 1800000);
+
+    // Close notifications when clicking outside
+    document.addEventListener('click', function(event) {
+      const notifications = document.getElementById('notifications');
+      const bellIcon = document.querySelector('.fa-bell');
+     
+      if (!notifications.contains(event.target) && event.target !== bellIcon && !bellIcon.contains(event.target)) {
+        if (notifications.classList.contains('show')) {
+          notifications.classList.remove('show');
+          setTimeout(() => {
+            notifications.style.display = 'none';
+          }, 300);
+        }
+      }
+    });
+
+    // Mobile menu toggle for smaller screens
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+    }
+
+    // Add hover effects for touch devices
+    document.addEventListener('touchstart', function() {}, true);
+  </script>
+</body>
+
+</html>
