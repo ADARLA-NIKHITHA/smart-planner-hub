@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyHub - Calendar</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: white;
+            padding: 25px 15px;
+            border-right: 1px solid #ddd;
+        }
+
+        .logo {
+            color: #6c4ce6;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px;
+            text-decoration: none;
+            color: #555;
+            margin: 5px 0;
+            border-radius: 7px;
+        }
+
+        .menu a:hover,
+        .active {
+            background: #eee9ff;
+            color: #6c4ce6 !important;
+        }
+
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        .calendar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .day {
+            height: 90px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .event {
+            background: #eee9ff;
+            color: #6c4ce6;
+            padding: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">📚 StudyHub</div>
+
+    <div class="menu">
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="notes.html">📝 Notes</a>
+        <a href="tasks.html">✅ Tasks</a>
+        <a href="pomodoro.html">⏱ Pomodoro</a>
+        <a href="calendar.html" class="active">📅 Calendar</a>
+        <a href="progress.html">📊 Progress</a>
+    </div>
+
+</div>
+
+<div class="main">
+
+    <h1>Calendar</h1>
+
+    <div class="calendar">
+
+        <h2>April 2025</h2>
+
+        <div class="days">
+
+            <div class="day"><b>Mon</b></div>
+            <div class="day"><b>Tue</b></div>
+            <div class="day"><b>Wed</b></div>
+            <div class="day"><b>Thu</b></div>
+            <div class="day"><b>Fri</b></div>
+            <div class="day"><b>Sat</b></div>
+            <div class="day"><b>Sun</b></div>
+
+            <div class="day">1</div>
+            <div class="day">2</div>
+            <div class="day">3</div>
+            <div class="day">4</div>
+            <div class="day">5</div>
+            <div class="day">6</div>
+            <div class="day">7</div>
+
+            <div class="day">8</div>
+            <div class="day">9</div>
+            <div class="day">
+                10
+                <div class="event">Project</div>
+            </div>
+            <div class="day">11</div>
+            <div class="day">12</div>
+            <div class="day">13</div>
+            <div class="day">14</div>
+
+            <div class="day">15</div>
+            <div class="day">16</div>
+            <div class="day">17</div>
+            <div class="day">18</div>
+            <div class="day">19</div>
+            <div class="day">20</div>
+            <div class="day">21</div>
+
+            <div class="day">22</div>
+            <div class="day">23</div>
+            <div class="day">24</div>
+            <div class="day">25</div>
+            <div class="day">26</div>
+            <div class="day">27</div>
+            <div class="day">28</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

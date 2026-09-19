@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyHub - Tasks</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: white;
+            padding: 25px 15px;
+            border-right: 1px solid #ddd;
+        }
+
+        .logo {
+            color: #6c4ce6;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px;
+            text-decoration: none;
+            color: #555;
+            margin: 5px 0;
+            border-radius: 7px;
+        }
+
+        .menu a:hover,
+        .active {
+            background: #eee9ff;
+            color: #6c4ce6 !important;
+        }
+
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        .task {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px #ddd;
+        }
+
+        .completed {
+            background: #eaf8ef;
+        }
+
+        .tag {
+            background: #e7ddff;
+            color: #6c4ce6;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">📚 StudyHub</div>
+
+    <div class="menu">
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="notes.html">📝 Notes</a>
+        <a href="tasks.html" class="active">✅ Tasks</a>
+        <a href="pomodoro.html">⏱ Pomodoro</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="progress.html">📊 Progress</a>
+    </div>
+
+</div>
+
+<div class="main">
+
+    <h1>Tasks</h1>
+
+    <div class="task">
+        <h3>☐ Complete project proposal</h3>
+        <p>Finish the project documentation.</p>
+        <span class="tag">Important</span>
+    </div>
+
+    <div class="task completed">
+        <h3>☑ Complete mathematics revision</h3>
+        <p>Revision completed successfully.</p>
+        <span class="tag">Completed</span>
+    </div>
+
+    <div class="task">
+        <h3>☐ Prepare presentation</h3>
+        <p>Prepare slides for the project presentation.</p>
+        <span class="tag">College</span>
+    </div>
+
+    <div class="task">
+        <h3>☐ Complete Java practice</h3>
+        <p>Solve Java programming problems.</p>
+        <span class="tag">Study</span>
+    </div>
+
+</div>
+
+</body>
+</html>

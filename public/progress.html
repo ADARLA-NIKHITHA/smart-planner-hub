@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyHub - Progress</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: white;
+            padding: 25px 15px;
+            border-right: 1px solid #ddd;
+        }
+
+        .logo {
+            color: #6c4ce6;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px;
+            text-decoration: none;
+            color: #555;
+            margin: 5px 0;
+            border-radius: 7px;
+        }
+
+        .menu a:hover,
+        .active {
+            background: #eee9ff;
+            color: #6c4ce6 !important;
+        }
+
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #6c4ce6;
+        }
+
+        .progress-box {
+            background: white;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .bar {
+            height: 15px;
+            background: #ddd;
+            border-radius: 10px;
+            margin: 10px 0 25px;
+        }
+
+        .fill {
+            height: 15px;
+            background: #6c4ce6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">📚 StudyHub</div>
+
+    <div class="menu">
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="notes.html">📝 Notes</a>
+        <a href="tasks.html">✅ Tasks</a>
+        <a href="pomodoro.html">⏱ Pomodoro</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="progress.html" class="active">📊 Progress</a>
+    </div>
+
+</div>
+
+<div class="main">
+
+    <h1>Study Progress</h1>
+
+    <div class="stats">
+
+        <div class="card">
+            <p>Total Goals</p>
+            <div class="value">4</div>
+        </div>
+
+        <div class="card">
+            <p>Active Goals</p>
+            <div class="value">4</div>
+        </div>
+
+        <div class="card">
+            <p>Weekly Focus</p>
+            <div class="value">75%</div>
+        </div>
+
+        <div class="card">
+            <p>Study Streak</p>
+            <div class="value">7 Days</div>
+        </div>
+
+    </div>
+
+    <div class="progress-box">
+
+        <h2>Weekly Progress</h2>
+
+        <p>Java Programming</p>
+        <div class="bar">
+            <div class="fill" style="width: 80%;"></div>
+        </div>
+
+        <p>Database Management</p>
+        <div class="bar">
+            <div class="fill" style="width: 65%;"></div>
+        </div>
+
+        <p>Data Structures</p>
+        <div class="bar">
+            <div class="fill" style="width: 75%;"></div>
+        </div>
+
+        <p>Web Development</p>
+        <div class="bar">
+            <div class="fill" style="width: 60%;"></div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

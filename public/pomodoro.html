@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyHub - Pomodoro</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: white;
+            padding: 25px 15px;
+            border-right: 1px solid #ddd;
+        }
+
+        .logo {
+            color: #6c4ce6;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 13px;
+            text-decoration: none;
+            color: #555;
+            margin: 5px 0;
+            border-radius: 7px;
+        }
+
+        .menu a:hover,
+        .active {
+            background: #eee9ff;
+            color: #6c4ce6 !important;
+        }
+
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .timer {
+            background: white;
+            width: 500px;
+            margin: 50px auto;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #ddd;
+        }
+
+        #time {
+            font-size: 70px;
+            color: #555;
+            margin: 30px;
+        }
+
+        button {
+            padding: 12px 25px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .start {
+            background: #6c4ce6;
+            color: white;
+        }
+
+        .reset {
+            background: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">📚 StudyHub</div>
+
+    <div class="menu">
+        <a href="dashboard.html">🏠 Dashboard</a>
+        <a href="notes.html">📝 Notes</a>
+        <a href="tasks.html">✅ Tasks</a>
+        <a href="pomodoro.html" class="active">⏱ Pomodoro</a>
+        <a href="calendar.html">📅 Calendar</a>
+        <a href="progress.html">📊 Progress</a>
+    </div>
+
+</div>
+
+<div class="main">
+
+    <h1>Focus Timer</h1>
+
+    <div class="timer">
+
+        <h2>Pomodoro Session</h2>
+
+        <div id="time">25:00</div>
+
+        <button class="start" onclick="startTimer()">Start</button>
+        <button class="reset" onclick="resetTimer()">Reset</button>
+
+        <p>Current Task: Complete project work</p>
+
+    </div>
+
+</div>
+
+<script>
+
+let seconds = 25 * 60;
+let timer;
+
+function updateTime() {
+
+    let minutes = Math.floor(seconds / 60);
+    let remaining = seconds % 60;
+
+    document.getElementById("time").innerText =
+        String(minutes).padStart(2, '0') + ":" +
+        String(remaining).padStart(2, '0');
+
+}
+
+function startTimer() {
+
+    if (timer) return;
+
+    timer = setInterval(function() {
+
+        if (seconds > 0) {
+            seconds--;
+            updateTime();
+        } else {
+            clearInterval(timer);
+            timer = null;
+            alert("Pomodoro session completed!");
+        }
+
+    }, 1000);
+
+}
+
+function resetTimer() {
+
+    clearInterval(timer);
+    timer = null;
+    seconds = 25 * 60;
+    updateTime();
+
+}
+
+</script>
+
+</body>
+</html>

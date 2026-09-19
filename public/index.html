@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Planner Hub - Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f0c29;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            animation: backgroundMove 20s ease infinite;
+        }
+
+        /* Gradient Background */
+        .gradient-bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e, #3a1c71);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            z-index: -2;
+        }
+
+        /* Floating Shapes */
+        .floating-shapes div {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            filter: blur(40px);
+            animation: float 20s ease-in-out infinite, rotate 30s linear infinite;
+        }
+
+        /* Card Container */
+        .form-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px 25px;
+            width: 400px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            color: #333;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            animation: formCardEntrance 1s ease forwards;
+        }
+
+        /* Title Styles */
+        .form-card h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #6a11cb;
+            opacity: 0;
+            animation: titleEntrance 1s ease-in-out forwards;
+        }
+
+        /* Input Fields */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #6a11cb;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #501ca8;
+        }
+
+        /* Links */
+        .helper-links {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .helper-links a {
+            color: #6a11cb;
+            text-decoration: none;
+        }
+
+        .helper-links a:hover {
+            text-decoration: underline;
+        }
+
+        .already-account {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .already-account a {
+            color: #2575fc;
+            text-decoration: none;
+        }
+
+        .already-account a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes formCardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes titleEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-10px) translateX(5px); }
+            50% { transform: translateY(5px) translateX(-5px); }
+            75% { transform: translateY(-5px) translateX(10px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-card {
+                width: 350px;
+            }
+            .form-card h1 {
+                font-size: 24px;
+            }
+            .form-group input {
+                font-size: 14px;
+            }
+            .btn-primary {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="gradient-bg"></div>
+
+    <!-- Floating Shapes -->
+    <div class="floating-shapes">
+        <div style="width: 300px; height: 300px; top: 20%; left: 10%;"></div>
+        <div style="width: 250px; height: 250px; top: 60%; right: 15%;"></div>
+        <div style="width: 200px; height: 200px; bottom: 20%; left: 30%;"></div>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="form-card" id="signup-form">
+        <h1>Create Your Account</h1>
+        <form action="/signup" method="POST">
+            <div class="form-group">
+                <label for="username">Full Name</label>
+                <input type="text" id="username" name="username" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" class="btn-primary">Sign Up</button>
+        </form>
+        <div class="helper-links">
+            <a href="#" onclick="showLoginForm()">Already have an account? Login here</a>
+        </div>
+    </div>
+
+    <!-- Login Form (Initially hidden) -->
+    <div class="form-card" id="login-form" style="display: none;">
+        <h1>Login</h1>
+        <!-- Change the login form to this: -->
+<form action="/login" method="POST" onsubmit="handleLogin(event)">
+    <div class="form-group">
+        <label for="email-login">Email Address</label>
+        <input type="email" id="email-login" name="email" placeholder="Enter your email" required>
+    </div>
+    <div class="form-group">
+        <label for="password-login">Password</label>
+        <input type="password" id="password-login" name="password" placeholder="Enter your password" required>
+    </div>
+    <button type="submit" class="btn-primary">Login</button>
+</form>
+        <div class="helper-links">
+            <a href="#">Forgot Password?</a>
+        </div>
+        <div class="already-account">
+            <p>Don't have an account? <a href="#" onclick="showSignupForm()">Create one here</a></p>
+        </div>
+    </div>
+
+    <script>
+        function showSignupForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+        }
+
+        function showLoginForm() {
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
